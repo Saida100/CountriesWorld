@@ -1,6 +1,8 @@
 package com.saida_aliyeva.countriesworld.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -40,8 +42,8 @@ public class QuizFragment extends Fragment {
         capitalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), QuizByCapitalActivity.class);
-                startActivity(intent);
+                showDialog();
+
 
             }
         });
@@ -61,5 +63,22 @@ public class QuizFragment extends Fragment {
 
     }
 
+    public void showDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        LayoutInflater layoutInflater=getActivity().getLayoutInflater();
+        View view=layoutInflater.inflate(R.layout.items_dialog_window,null);
+        dialog.setTitle("Selection question number")
+                .setMessage("Please select question number")
+                .setView(view)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        Intent intent = new Intent(getActivity(), QuizByCapitalActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .show();
+    }
 
 }
