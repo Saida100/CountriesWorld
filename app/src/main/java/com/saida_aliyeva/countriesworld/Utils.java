@@ -7,12 +7,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.saida_aliyeva.countriesworld.activity.CountriesDataActivity;
+import com.saida_aliyeva.countriesworld.activity.MainActivity;
 import com.saida_aliyeva.countriesworld.activity.QuizByCapitalActivity;
 import com.saida_aliyeva.countriesworld.adapter.RVAdapter;
 import com.saida_aliyeva.countriesworld.api.ApiInit;
@@ -101,11 +105,27 @@ public class Utils {
     }
 
 
-    public static void setBundle(String key, String value, Activity first, Context context) {
+    public static void setBundle(String key, String value, Activity first, Activity second, Context context) {
         Bundle bundle = new Bundle();
         bundle.putString(key, value);
-        Intent intent = new Intent(first, QuizByCapitalActivity.class);
+        Intent intent = new Intent(first, second.getClass());
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
+
+    public static void getTextRadioButton(final RadioButton radioButton) {
+        radioButton.setChecked(false);
+
+
+        radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                String textRadioButton = compoundButton.getText().toString();
+                Log.e("log", textRadioButton);
+            }
+        });
+
+    }
+
+
 }

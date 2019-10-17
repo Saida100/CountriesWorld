@@ -6,6 +6,7 @@
 
 
     <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -18,7 +19,8 @@
             android:layout_height="wrap_content"
             android:text="10"
             android:textColor="#f00"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
 
         <RadioButton
             android:id="@+id/second_answer"
@@ -26,7 +28,8 @@
             android:layout_height="wrap_content"
             android:text="20"
             android:textColor="#f00"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
 
         <RadioButton
             android:id="@+id/third_answer"
@@ -34,7 +37,8 @@
             android:layout_height="wrap_content"
             android:text="30"
             android:textColor="#f00"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
 
         <RadioButton
             android:id="@+id/fourth_answer"
@@ -42,7 +46,8 @@
             android:layout_height="wrap_content"
             android:text="40"
             android:textColor="#f00"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
 
         <RadioButton
             android:id="@+id/fifth_answer"
@@ -50,7 +55,8 @@
             android:layout_height="wrap_content"
             android:text="50"
             android:textColor="#f00"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
 
         <RadioButton
             android:id="@+id/sixth_answer"
@@ -58,7 +64,8 @@
             android:layout_height="wrap_content"
             android:text="100"
             android:textColor="#f00"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
 
     </RadioGroup>
 

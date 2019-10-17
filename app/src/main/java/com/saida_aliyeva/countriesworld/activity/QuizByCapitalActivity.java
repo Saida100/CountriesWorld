@@ -1,18 +1,26 @@
 package com.saida_aliyeva.countriesworld.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.saida_aliyeva.countriesworld.Utils;
+import com.saida_aliyeva.countriesworld.fragment.QuizFragment;
 import com.saida_aliyeva.countriesworld.model_class.Countries;
 import com.saida_aliyeva.countriesworld.R;
 
@@ -28,48 +36,36 @@ public class QuizByCapitalActivity extends AppCompatActivity {
     Random random;
     List<Countries> newList = new ArrayList<>();
     Boolean checkNextQuestion = true;
-    String checkCorrectAnswer="";
-    String selectedAnswer="";
+    String checkCorrectAnswer = "";
+    String selectedAnswer = "";
+    int questionCount;
+    int count = 1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_by_capital);
+        nextQuestionButton = findViewById(R.id.nextQuestion);
 
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        questionCount = Integer.parseInt(bundle.getString("radioButton"));
+        Log.e("countQuestion", String.valueOf(questionCount));
         aButton = findViewById(R.id.a);
         bButton = findViewById(R.id.b);
         cButton = findViewById(R.id.c);
         dButton = findViewById(R.id.d);
-        nextQuestionButton = findViewById(R.id.nextQuestion);
         nextQuestionButton.setText("Verify");
         timeTextView = findViewById(R.id.time);
         questionCountTextView = findViewById(R.id.questionCount);
         questionContentTextView = findViewById(R.id.question);
+        questionCountTextView.setText("Question\n" + count + "/" + questionCount);
         getTasksFromSharedPrefs(this);
+        clickNextButton(nextQuestionButton);
         random = new Random();
         setQuestionAndCorrectAnswer();
 
-        nextQuestionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!checkNextQuestion) {
-                    nextQuestionButton.setText("Verify");
-                    setQuestionAndCorrectAnswer();
-                    doNotchangeSelectedButtonColor(aButton, bButton, cButton, dButton);
-                    checkNextQuestion = true;
-                } else {
-                    showCorrectAnswer();
-                    checkCorrectAnswer();
-                    nextQuestionButton.setText("Next");
-                    checkNextQuestion = false;
-                    selectedAnswer="";
-
-
-                }
-
-            }
-        });
         aButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,5 +215,64 @@ public class QuizByCapitalActivity extends AppCompatActivity {
         }
     }
 
+    public void clickNextButton(final Button button) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View view) {
+                if (!checkNextQuestion) {
+                    count++;
+                    button.setText("Verify");
+                    if (count > questionCount) {
+                        finish();
+                    } else {
+                        questionCountTextView.setText("Question\n" + count + "/" + questionCount);
+                        setQuestionAndCorrectAnswer();
+                        doNotchangeSelectedButtonColor(aButton, bButton, cButton, dButton);
+                    }
+
+                    Log.e("count=", String.valueOf(count));
+                    checkNextQuestion = true;
+
+                } else {
+                    showCorrectAnswer();
+                    checkCorrectAnswer();
+                    button.setText("Next");
+                    checkNextQuestion = false;
+                    selectedAnswer = "";
+                }
+
+            }
+
+
+        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        //   super.onBackPressed();
+        showDialog();
+    }
+
+    public void showDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("About continue quiz")
+                .setMessage("Are you sure to stop quiz?")
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        finish();
+                    }
+                })
+                .show();
+    }
 
 }
