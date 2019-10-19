@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
@@ -115,17 +116,15 @@ public class Utils {
 
     public static void getTextRadioButton(final RadioButton radioButton) {
         radioButton.setChecked(false);
-
-
         radioButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 String textRadioButton = compoundButton.getText().toString();
-                Log.e("log", textRadioButton);
             }
         });
 
     }
+
 
 
 }

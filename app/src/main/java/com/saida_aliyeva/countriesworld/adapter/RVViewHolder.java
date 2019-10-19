@@ -37,20 +37,22 @@ public class RVViewHolder extends RecyclerView.ViewHolder {
             String alpha2Code = countries.getAlpha2Code();
             capitalNameTextView.setText(countries.getCapital());
             countryNameTextView.setText(countries.getName());
-            if (!alpha2Code.equals("SS") && !alpha2Code.equals("AX") && !alpha2Code.equals("AN") &&
-                    !alpha2Code.equals("CW") && !alpha2Code.equals("GF") &&
-                    !alpha2Code.equals("MQ") && !alpha2Code.equals("RE") &&
-                    !alpha2Code.equals("SX") && !alpha2Code.equals("GS") &&
-                    !countries.getName().contains("Bonaire") &&
-                    !countries.getName().contains("Minor") &&
-                    !countries.getName().equals("Republic of Kosovo") &&
-                    !countries.getName().equals("Guadeloupe")
-
-            ) {
-                Utils.loadImage("http://www.geognos.com/api/en/countries/flag/",
-                        alpha2Code, ".png", flagImageView);
-
-            } else {
+            Utils.loadImage("http://www.geognos.com/api/en/countries/flag/",
+                    alpha2Code, ".png", flagImageView);
+//            if (!alpha2Code.equals("SS") && !alpha2Code.equals("AX") && !alpha2Code.equals("AN") &&
+//                    !alpha2Code.equals("CW") && !alpha2Code.equals("GF") &&
+//                    !alpha2Code.equals("MQ") && !alpha2Code.equals("RE") &&
+//                    !alpha2Code.equals("SX") && !alpha2Code.equals("GS") &&
+//                    !countries.getName().contains("Bonaire") &&
+//                    !countries.getName().contains("Minor") &&
+//                    !countries.getName().equals("Republic of Kosovo") &&
+//                    !countries.getName().equals("Guadeloupe")){
+//
+//
+//                Utils.loadImage("http://www.geognos.com/api/en/countries/flag/",
+//                        alpha2Code, ".png", flagImageView);
+//
+//            }
                 if (alpha2Code.equals("AX")) {
                     Utils.loadImage("https://www.crwflags.com/fotw/images/a/", "ax", ".gif", flagImageView);
                 }
@@ -59,7 +61,7 @@ public class RVViewHolder extends RecyclerView.ViewHolder {
                 }
 
 
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

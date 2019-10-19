@@ -2,6 +2,7 @@ package com.saida_aliyeva.countriesworld.activity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
@@ -11,18 +12,23 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.saida_aliyeva.countriesworld.Utils;
 import com.saida_aliyeva.countriesworld.fragment.QuizFragment;
+import com.saida_aliyeva.countriesworld.fragment.QuizResultFragment;
 import com.saida_aliyeva.countriesworld.model_class.Countries;
 import com.saida_aliyeva.countriesworld.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +39,7 @@ public class QuizByCapitalActivity extends AppCompatActivity {
     List<Countries> countries;
     Button aButton, bButton, cButton, dButton, nextQuestionButton;
     TextView timeTextView, questionCountTextView, questionContentTextView;
+    ImageView flagImageView;
     Random random;
     List<Countries> newList = new ArrayList<>();
     Boolean checkNextQuestion = true;
@@ -40,14 +47,30 @@ public class QuizByCapitalActivity extends AppCompatActivity {
     String selectedAnswer = "";
     int questionCount;
     int count = 1;
+    long startTime = 0;
+    int countCorrectAnswers=0;
+    Toolbar toolbar;
+    LinearLayout fragmentLayout,questionLayout;
+    QuizResultFragment quizResultFragment;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_by_capital);
+        quizResultFragment=new QuizResultFragment();
+        fragmentLayout=findViewById(R.id.container);
+        questionLayout=findViewById(R.id.questions);
+        toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Quiz by capital");
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setSubtitleTextColor(Color.WHITE);
         nextQuestionButton = findViewById(R.id.nextQuestion);
-
+        timeTextView = findViewById(R.id.time);
+        questionCountTextView = findViewById(R.id.questionCount);
+        questionContentTextView = findViewById(R.id.question);
+        flagImageView = findViewById(R.id.flag);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         questionCount = Integer.parseInt(bundle.getString("radioButton"));
@@ -57,14 +80,28 @@ public class QuizByCapitalActivity extends AppCompatActivity {
         cButton = findViewById(R.id.c);
         dButton = findViewById(R.id.d);
         nextQuestionButton.setText("Verify");
-        timeTextView = findViewById(R.id.time);
-        questionCountTextView = findViewById(R.id.questionCount);
-        questionContentTextView = findViewById(R.id.question);
+
         questionCountTextView.setText("Question\n" + count + "/" + questionCount);
         getTasksFromSharedPrefs(this);
         clickNextButton(nextQuestionButton);
         random = new Random();
         setQuestionAndCorrectAnswer();
+        final Handler timerHandler = new Handler();
+        Runnable timerRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                long millis = System.currentTimeMillis() - startTime;
+                int seconds = (int) (millis / 1000);
+                int minutes = seconds / 60;
+                seconds = seconds % 60;
+                //   timeTextView.setText(String.format("%d:%02d", minutes, seconds));
+                timeTextView.setText("Time\n" + minutes + " m " + seconds + " sec");
+                timerHandler.postDelayed(this, 500);
+            }
+        };
+        startTime = System.currentTimeMillis();
+        timerHandler.postDelayed(timerRunnable, 0);
 
         aButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +155,17 @@ public class QuizByCapitalActivity extends AppCompatActivity {
 
         int rd = random.nextInt(newList.size());
         questionContentTextView.setText("What is the capital of " + newList.get(rd).getName() + "?");
+        getSupportActionBar().setSubtitle(newList.get(rd).getName());
+        String alpha2Code = newList.get(rd).getAlpha2Code();
+        if (alpha2Code != "AX" && alpha2Code != "AN") {
+            Picasso.get().load("http://www.geognos.com/api/en/countries/flag/" + alpha2Code.toUpperCase() + ".png").into(flagImageView);
+        }
+        if (alpha2Code.equals("AX")) {
+            Utils.loadImage("https://www.crwflags.com/fotw/images/a/", "ax", ".gif", flagImageView);
+        }
+        if (alpha2Code.equals("AN")) {
+            Utils.loadImage("https://www.crwflags.com/fotw/images/a/", "an", ".gif", flagImageView);
+        }
         String correctAnswer = newList.get(rd).getCapital();
         newList.remove(rd);
         int numberAnswerButton = random.nextInt(4);
@@ -212,6 +260,9 @@ public class QuizByCapitalActivity extends AppCompatActivity {
                     break;
             }
 
+        } else {
+            countCorrectAnswers++;
+            Log.e("countCorrectAnswers", String.valueOf(countCorrectAnswers));
         }
     }
 
@@ -224,7 +275,24 @@ public class QuizByCapitalActivity extends AppCompatActivity {
                     count++;
                     button.setText("Verify");
                     if (count > questionCount) {
-                        finish();
+                      //  finish();
+                        fragmentLayout.setVisibility(View.VISIBLE);
+                        questionLayout.setVisibility(View.GONE);
+                        toolbar.setTitle("Your result");
+                        toolbar.setSubtitle("");
+                        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+                        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                finish();
+                            }
+                        });
+                        Bundle bundle=new Bundle();
+                        bundle.putString("time",timeTextView.getText().toString().substring(4));
+                        bundle.putString("correctAnswers", String.valueOf(countCorrectAnswers));
+                        bundle.putString("uncorrectAnswers", String.valueOf(questionCount-countCorrectAnswers));
+                        quizResultFragment.setArguments(bundle);
+                        setFragment();
                     } else {
                         questionCountTextView.setText("Question\n" + count + "/" + questionCount);
                         setQuestionAndCorrectAnswer();
@@ -251,8 +319,12 @@ public class QuizByCapitalActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //   super.onBackPressed();
-        showDialog();
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count == 0) {
+            showDialog();
+        } else {
+            finish();
+        }
     }
 
     public void showDialog() {
@@ -273,6 +345,13 @@ public class QuizByCapitalActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    public void setFragment(){
+        FragmentTransaction fragmentTransaction=getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container,quizResultFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 
 }
