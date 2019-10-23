@@ -16,6 +16,10 @@ import com.squareup.picasso.Picasso;
 
 public class CountriesDataActivity extends AppCompatActivity {
 
+    TextView countryTextView, capitalTextView, areaTextView, area1, regionTextView, subRegiontextView,
+            domainTextView, callingCodeTextView, currencyTextView, latlngTextView, languageTextView;
+    ImageView flagImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,21 +56,8 @@ public class CountriesDataActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        TextView countryTextView, capitalTextView, areaTextView, area1, regionTextView, subRegiontextView,
-                domainTextView, callingCodeTextView, currencyTextView, latlngTextView, languageTextView;
-        ImageView flagImageView;
-        flagImageView = findViewById(R.id.flagImage);
-        countryTextView = findViewById(R.id.countryName);
-        capitalTextView = findViewById(R.id.capitalName);
-        regionTextView = findViewById(R.id.regionName);
-        subRegiontextView = findViewById(R.id.subRegionName);
-        areaTextView = findViewById(R.id.areaName);
-        area1 = findViewById(R.id.area);
-        domainTextView = findViewById(R.id.domainName);
-        callingCodeTextView = findViewById(R.id.callingCodeName);
-        currencyTextView = findViewById(R.id.currencyName);
-        latlngTextView = findViewById(R.id.latlngName);
-        languageTextView = findViewById(R.id.languageName);
+
+        initViews();
         countryTextView.setText(countryName);
         capitalTextView.setText(capital);
         regionTextView.setText(region);
@@ -89,5 +80,21 @@ public class CountriesDataActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    public void initViews() {
+
+        flagImageView = findViewById(R.id.flagImage);
+        countryTextView = findViewById(R.id.countryName);
+        capitalTextView = findViewById(R.id.capitalName);
+        regionTextView = findViewById(R.id.regionName);
+        subRegiontextView = findViewById(R.id.subRegionName);
+        areaTextView = findViewById(R.id.areaName);
+        area1 = findViewById(R.id.area);
+        domainTextView = findViewById(R.id.domainName);
+        callingCodeTextView = findViewById(R.id.callingCodeName);
+        currencyTextView = findViewById(R.id.currencyName);
+        latlngTextView = findViewById(R.id.latlngName);
+        languageTextView = findViewById(R.id.languageName);
     }
 }

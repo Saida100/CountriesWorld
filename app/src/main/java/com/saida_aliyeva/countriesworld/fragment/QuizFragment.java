@@ -130,6 +130,9 @@ public class QuizFragment extends Fragment {
                         getTextRadioButton = sixthRadioButton.getText().toString();
                         Log.e("log", getTextRadioButton);
                         break;
+                        default:
+                            getTextRadioButton="10";
+                            break;
                 }
             }
         });

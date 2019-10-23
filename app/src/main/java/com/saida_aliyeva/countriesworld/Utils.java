@@ -40,38 +40,38 @@ public class Utils {
         Picasso.get().load(url + alpha2Code + ext).into(imageView);
     }
 
-    public static void callRequest(final RecyclerView recyclerView, final Context context, final Activity activity) {
-        ApiInit apiInit = new ApiInit();
-        apiInit.initRetrofit();
-        ApiInterfaces apiInterfaces = apiInit.getClient();
-        apiInterfaces.getCountries().enqueue(new Callback<List<Countries>>() {
-            @Override
-            public void onResponse(Call<List<Countries>> call, final Response<List<Countries>> response) {
-                countriesList = response.body();
-                saveTasksToSharedPrefs(context);
+//    public static void callRequest(final RecyclerView recyclerView, final Context context, final Activity activity) {
+//        ApiInit apiInit = new ApiInit();
+//        apiInit.initRetrofit();
+//        ApiInterfaces apiInterfaces = apiInit.getClient();
+//        apiInterfaces.getCountries().enqueue(new Callback<List<Countries>>() {
+//            @Override
+//            public void onResponse(Call<List<Countries>> call, final Response<List<Countries>> response) {
+//                countriesList = response.body();
+//                saveTasksToSharedPrefs(context);
+//
+//                rvAdapter = new RVAdapter(context, countriesList, new Listener() {
+//                    @Override
+//                    public void inItemClick(Countries countries) {
+//                        Bundle bundle = putBundle(countries, activity);
+//                        Intent intent = new Intent(activity, CountriesDataActivity.class);
+//                        intent.putExtras(bundle);
+//                        context.startActivity(intent);
+//
+//                    }
+//                });
+//                recyclerView.setAdapter(rvAdapter);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<Countries>> call, Throwable t) {
+//                Log.e("error Message", t.getMessage());
+//            }
+//        });
+//
+//    }
 
-                rvAdapter = new RVAdapter(context, countriesList, new Listener() {
-                    @Override
-                    public void inItemClick(Countries countries) {
-                        Bundle bundle = putBundle(countries, activity);
-                        Intent intent = new Intent(activity, CountriesDataActivity.class);
-                        intent.putExtras(bundle);
-                        context.startActivity(intent);
-
-                    }
-                });
-                recyclerView.setAdapter(rvAdapter);
-            }
-
-            @Override
-            public void onFailure(Call<List<Countries>> call, Throwable t) {
-                Log.e("error Message", t.getMessage());
-            }
-        });
-
-    }
-
-    public static Bundle putBundle(Countries countries, Activity activity) {
+    public static Bundle putBundle(Countries countries) {
         Bundle bundle = new Bundle();
         try {
             bundle.putString("countryName", countries.getName());
@@ -96,7 +96,7 @@ public class Utils {
 
     }
 
-    public static void saveTasksToSharedPrefs(Context context) {
+    public static void saveTasksToSharedPrefs(Context context,List<Countries> countriesList) {
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
         Gson gson = new Gson();

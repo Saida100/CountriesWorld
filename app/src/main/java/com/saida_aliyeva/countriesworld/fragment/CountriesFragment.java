@@ -2,6 +2,7 @@ package com.saida_aliyeva.countriesworld.fragment;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,9 +23,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.saida_aliyeva.countriesworld.Listener;
 import com.saida_aliyeva.countriesworld.R;
+import com.saida_aliyeva.countriesworld.activity.CountriesDataActivity;
 import com.saida_aliyeva.countriesworld.adapter.RVAdapter;
 import com.saida_aliyeva.countriesworld.Utils;
+import com.saida_aliyeva.countriesworld.api.ApiInit;
+import com.saida_aliyeva.countriesworld.api.ApiInterfaces;
+import com.saida_aliyeva.countriesworld.model_class.Countries;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class CountriesFragment extends Fragment {
@@ -52,63 +65,63 @@ public class CountriesFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
         setHasOptionsMenu(true);
-        Utils.callRequest(recyclerView, getContext(), getActivity());
-        //   callRequest();
+       // Utils.callRequest(recyclerView, getContext(), getActivity());
+           callRequest();
 
     }
 
-//    private void callRequest() {
-//        ApiInit apiInit = new ApiInit();
-//        apiInit.initRetrofit();
-//        ApiInterfaces apiInterfaces = apiInit.getClient();
-//        apiInterfaces.getCountries().enqueue(new Callback<List<Countries>>() {
-//            @Override
-//            public void onResponse(Call<List<Countries>> call, final Response<List<Countries>> response) {
-//                List<Countries> countriesList = response.body();
-//                Utils.saveTasksToSharedPrefs(getContext());
-//                rvAdapter = new RVAdapter(getContext(), countriesList, new Listener() {
-//                    @Override
-//                    public void inItemClick(Countries countries) {
-//                        putBundle(countries);
-//                    }
-//                });
-//                recyclerView.setAdapter(rvAdapter);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<List<Countries>> call, Throwable t) {
-//                Log.e("error Message", t.getMessage());
-//            }
-//        });
-//
-//    }
+    private void callRequest() {
+        ApiInit apiInit = new ApiInit();
+        apiInit.initRetrofit();
+        ApiInterfaces apiInterfaces = apiInit.getClient();
+        apiInterfaces.getCountries().enqueue(new Callback<List<Countries>>() {
+            @Override
+            public void onResponse(Call<List<Countries>> call, final Response<List<Countries>> response) {
+                List<Countries> countriesList = response.body();
+                Utils.saveTasksToSharedPrefs(getContext(),countriesList);
+                rvAdapter = new RVAdapter(getContext(), countriesList, new Listener() {
+                    @Override
+                    public void inItemClick(Countries countries) {
+                         Utils.putBundle(countries);
+                    }
+                });
+                recyclerView.setAdapter(rvAdapter);
+            }
 
-//    public void putBundle(Countries countries) {
-//        Bundle bundle = new Bundle();
-//        try {
-//            bundle.putString("countryName", countries.getName());
-//            bundle.putString("capital", countries.getCapital());
-//            bundle.putString("flag", countries.getFlag());
-//            bundle.putString("callingCode", countries.getCallingCodes().get(0));
-//            bundle.putString("region", countries.getRegion());
-//            bundle.putString("subregion", countries.getSubregion());
-//            bundle.putString("area", countries.getArea());
-//            bundle.putString("domain", countries.getTopLevelDomain().get(0));
-//            bundle.putString("lat", countries.getLatlng().get(0).toString());
-//            bundle.putString("lng", countries.getLatlng().get(1).toString());
-//            bundle.putString("currency", countries.getCurrencies().get(0).getName());
-//            bundle.putString("symbol", countries.getCurrencies().get(0).getSymbol());
-//            bundle.putString("langName", countries.getLanguages().get(0).getName());
-//            bundle.putString("langNativeName", countries.getLanguages().get(0).getNativeName());
-//            bundle.putString("alpha2Code", countries.getAlpha2Code());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        Intent intent = new Intent(getActivity(), CountriesDataActivity.class);
-//        intent.putExtras(bundle);
-//        startActivity(intent);
-//
-//    }
+            @Override
+            public void onFailure(Call<List<Countries>> call, Throwable t) {
+                Log.e("error Message", t.getMessage());
+            }
+        });
+
+    }
+
+    public void putBundle(Countries countries) {
+        Bundle bundle = new Bundle();
+        try {
+            bundle.putString("countryName", countries.getName());
+            bundle.putString("capital", countries.getCapital());
+            bundle.putString("flag", countries.getFlag());
+            bundle.putString("callingCode", countries.getCallingCodes().get(0));
+            bundle.putString("region", countries.getRegion());
+            bundle.putString("subregion", countries.getSubregion());
+            bundle.putString("area", countries.getArea());
+            bundle.putString("domain", countries.getTopLevelDomain().get(0));
+            bundle.putString("lat", countries.getLatlng().get(0).toString());
+            bundle.putString("lng", countries.getLatlng().get(1).toString());
+            bundle.putString("currency", countries.getCurrencies().get(0).getName());
+            bundle.putString("symbol", countries.getCurrencies().get(0).getSymbol());
+            bundle.putString("langName", countries.getLanguages().get(0).getName());
+            bundle.putString("langNativeName", countries.getLanguages().get(0).getNativeName());
+            bundle.putString("alpha2Code", countries.getAlpha2Code());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Intent intent = new Intent(getActivity(), CountriesDataActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+    }
 
 
     @Override
