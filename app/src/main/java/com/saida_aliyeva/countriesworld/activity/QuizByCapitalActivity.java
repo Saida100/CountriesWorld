@@ -36,6 +36,7 @@ import java.util.Random;
 public class QuizByCapitalActivity extends AppCompatActivity {
 
     List<Countries> countries;
+    List<String> randomCapitalList;
     Button aButton, bButton, cButton, dButton, nextQuestionButton;
     TextView timeTextView, questionCountTextView, questionContentTextView;
     ImageView flagImageView;
@@ -49,6 +50,7 @@ public class QuizByCapitalActivity extends AppCompatActivity {
     long startTime = 0;
     int getRandomNumber;
     int countCorrectAnswers = 0;
+    int hasCapitalNameInVariants = 0;
     Toolbar toolbar;
     LinearLayout fragmentLayout, questionLayout;
     QuizResultFragment quizResultFragment;
@@ -59,6 +61,7 @@ public class QuizByCapitalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz_by_capital);
         initViews();
+        randomCapitalList = new ArrayList<>();
         quizResultFragment = new QuizResultFragment();
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Quiz by capital");
@@ -141,6 +144,7 @@ public class QuizByCapitalActivity extends AppCompatActivity {
     }
 
     public void setQuestionAndCorrectAnswer() {
+        //    randomCapitalList.clear();
         getRandomNumber = random.nextInt(newList.size());
         questionContentTextView.setText("What is the capital of " + newList.get(getRandomNumber).getName() + "?");
         getSupportActionBar().setSubtitle(newList.get(getRandomNumber).getName());
@@ -155,7 +159,8 @@ public class QuizByCapitalActivity extends AppCompatActivity {
             Utils.loadImage("https://www.crwflags.com/fotw/images/a/", "an", ".gif", flagImageView);
         }
         String correctAnswer = newList.get(getRandomNumber).getCapital();
-        newList.remove(getRandomNumber);
+        randomCapitalList.add(newList.get(getRandomNumber).getCapital());
+         newList.remove(getRandomNumber);
         int numberAnswerButton = random.nextInt(4);
         switch (numberAnswerButton) {
             case 0:
@@ -191,8 +196,31 @@ public class QuizByCapitalActivity extends AppCompatActivity {
 
     public void setVariants(Button button1) {
         int rand = random.nextInt(newList.size());
-        button1.setText(newList.get(rand).getCapital());
+        if (randomCapitalList.size() > 3) {
+            randomCapitalList.clear();
+        }
+
+        checkRandomCapitalWithRandomList(rand);
+
+        if (hasCapitalNameInVariants == 0) {
+            randomCapitalList.add(newList.get(rand).getCapital());
+            button1.setText(newList.get(rand).getCapital());
+        } else{
+            rand = random.nextInt(newList.size());
+            checkRandomCapitalWithRandomList(rand);
+        }
+        Log.e("randomNumberList=", randomCapitalList.toString());
+
     }
+
+   public void checkRandomCapitalWithRandomList(int rand){
+       for (int i = 0; i < randomCapitalList.size(); i++) {
+           if (newList.get(rand).getCapital() == randomCapitalList.get(i)) {
+               hasCapitalNameInVariants++;
+               break;
+           }
+       }
+   }
 
 
     public void changeSelectedButtonColor(Button selectedButton, Button bButton, Button cButton, Button dButton) {
@@ -249,7 +277,6 @@ public class QuizByCapitalActivity extends AppCompatActivity {
 
         } else {
             countCorrectAnswers++;
-            Log.e("countCorrectAnswers", String.valueOf(countCorrectAnswers));
         }
     }
 

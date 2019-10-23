@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="#000"
-            android:text="Uncorrect answers"
+            android:text="Incorrect answers"
             android:layout_marginLeft="5dp"
             android:textSize="15sp" />
 </LinearLayout>
